@@ -9,6 +9,13 @@ export class GameStartButton extends Button {
 
      @property({ type:Node, visible: true })
     disableNode : Node = null;
+
+    @property({ type:Node, visible: true })
+    playerTiles: Node [] = Array(4);
+
+    nPlayers:number = 2;
+
+
     
     onClicked()
     {
@@ -28,6 +35,12 @@ export class GameStartButton extends Button {
         this.node.on('startGame', function ( event ) {
             console.log("Enabling game")
             this.disableNode.active = false;
+            for(let i = 0; i<this.nPlayers; i++)
+            {
+                this.playerTiles[i].active = true;
+                this.playerTiles[i].opacity = 50;
+            }
+            this.playerTiles[0].opacity = 255;
            
           }.bind(this));
     }
@@ -38,6 +51,7 @@ export class GameStartButton extends Button {
         return false;
         if(parseInt(ebox.string)<= ebox.max_val && parseInt(ebox.string) >= ebox.min_val  )
         {
+            this.nPlayers = parseInt(ebox.string);
             return true;
             
         }
