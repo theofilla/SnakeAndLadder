@@ -61,6 +61,11 @@ export class GameStartButton extends Button {
             return false;
         }
 
+        getNoOfPlayers()
+        {
+            return this.nPlayers;
+        }
+
     }
     
 
