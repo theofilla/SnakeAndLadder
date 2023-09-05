@@ -11,14 +11,16 @@ export class CellManagerComponent extends Component {
 
     getCellPosition(cellId)
     {
+    if(this.cells[cellId-1])
        return this.cells[cellId-1].node.position;
     }
 
     getNextCell(cellId)
     {
+        if(this.cells[cellId-1])
         return this.cells[cellId-1].getNextCell();
     }
-    
+
    update(deltaTime: number) {
         
     }

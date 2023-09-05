@@ -1,4 +1,4 @@
-import { _decorator, CCInteger, Component, Node } from 'cc';
+import { _decorator, CCInteger, Component, Node, tween, Vec3 } from 'cc';
 import { CellManagerComponent } from './CellManagerComponent';
 const { ccclass, property } = _decorator;
 
@@ -12,7 +12,8 @@ export class PlayerComponent extends Component {
     cellManager: CellManagerComponent= null;
 
     @property({type:Node, visible:true})
-    gameOver: Node= null;
+    gameOver: Node = null;
+    
 
     private currentCell: number = 1;
     private nextCell: number = 2;
@@ -27,7 +28,12 @@ export class PlayerComponent extends Component {
         
     this.node.on("DiceWin",
         (event: Event, detail?: any) => this.playMove(event)); 
+
+        
+        this.node.on("ForceDiceWin",
+        (event: Event, detail?: any) => this.forceWin(event)); 
       
+        
     
     }
     
@@ -45,7 +51,17 @@ export class PlayerComponent extends Component {
         if(this.cellManager.getNextCell(this.currentCell)!=this.currentCell+1) //drop or climb
         {
             //play audio 
-            this.nextCell = this.cellManager.getNextCell(this.currentCell)
+            this.nextCell = this.cellManager.getNextCell(this.currentCell);
+            let tweenDuration: number = 2.0;
+            let t1 = tween(this.node)
+                .to(tweenDuration, { scale: new Vec3(1,1.02,1.02) })
+
+            let startPosition = this.cellManager.getCellPosition(this.currentCell);
+            let newPosition = this.cellManager.getCellPosition(this.nextCell);
+            let t2 = tween(this.node)
+                .to(tweenDuration, { position: newPosition})
+                
+           // tween(this.node).to(tweenDuration, {position: newPosition}).start()
             this.node.setPosition(this.cellManager.getCellPosition(this.nextCell));
 
         }
@@ -57,6 +73,12 @@ export class PlayerComponent extends Component {
         }
     }
 
+    forceWin(eventData)
+    {
+        this.currentCell = eventData.cellNum;
+        this.node.setPosition(this.cellManager.getCellPosition(this.currentCell));
+        this.playMove(eventData);
+    }
 
     update(deltaTime: number) {
         
